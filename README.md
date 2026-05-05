@@ -1,4 +1,11 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Overview
+
+A Kanban SaaS application built with Next.js.
+
+## Project Management
+
+Task tracking is managed here:
+https://github.com/users/mjc136/projects/1/views/3
 
 ## Getting Started
 
