@@ -18,13 +18,24 @@ model Board {
   title  String
   userId String
   user   User   @relation(fields: [userId], references: [id])
-  cards  Card[]
+  lists  List[]
+}
+
+model List {
+  id      String @id @default(cuid())
+  title   String
+  boardId String
+  cards   Card[]
+  board   Board  @relation(fields: [boardId], references: [id])
 }
 
 model Card {
   id      String @id @default(cuid())
   title   String
   content String?
-  boardId String
-  board   Board  @relation(fields: [boardId], references: [id])
+  listId String
+  list   List  @relation(fields: [listId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  position Int
 }
