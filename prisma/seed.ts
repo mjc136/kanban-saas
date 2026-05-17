@@ -1,21 +1,16 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
-
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 async function main() {
-  // 1. Cleans existing data
+  // Clean existing data
   await prisma.card.deleteMany();
   await prisma.list.deleteMany();
   await prisma.board.deleteMany();
   await prisma.user.deleteMany();
 
-  // 2. Create user
+  // Create user
   const user = await prisma.user.create({
     data: {
       email: "test@example.com",
@@ -23,7 +18,7 @@ async function main() {
     },
   });
 
-  // 3. Create board
+  // Create board
   const board = await prisma.board.create({
     data: {
       title: "My First Board",
@@ -31,29 +26,20 @@ async function main() {
     },
   });
 
-  // 4. Create lists
-  const todoList = await prisma.list.create({
-    data: {
-      title: "Todo",
-      boardId: board.id,
-    },
-  });
+  // Create lists
+  const [todoList, doingList, doneList] = await Promise.all([
+    prisma.list.create({
+      data: { title: "Todo", boardId: board.id },
+    }),
+    prisma.list.create({
+      data: { title: "Doing", boardId: board.id },
+    }),
+    prisma.list.create({
+      data: { title: "Done", boardId: board.id },
+    }),
+  ]);
 
-  const doingList = await prisma.list.create({
-    data: {
-      title: "Doing",
-      boardId: board.id,
-    },
-  });
-
-  const doneList = await prisma.list.create({
-    data: {
-      title: "Done",
-      boardId: board.id,
-    },
-  });
-
-  // 5. Create cards (with ordering via position)
+  // Create cards
   await prisma.card.createMany({
     data: [
       {
